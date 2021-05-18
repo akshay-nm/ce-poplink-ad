@@ -22,6 +22,24 @@ export class CePoplinkAd extends LitElement {
       padding-right: 1px;
       padding-left: 1px;
     }
+    .keywordindicator {
+      position: absolute;
+      z-index: 10;
+      top: -20px;
+      left: 0;
+      border-radius: 5px 5px 5px 5px;
+      overflow: hidden;
+      opacity: 0.3;
+    }
+    .highlightkeywordindicator {
+      opacity: 1;
+    }
+    .closebutton {
+      opacity: 0.2;
+    }
+    .highlightclosebutton {
+      opacity: 1;
+    }
     .bannercontainer {
       position: absolute;
       z-index: 10;
@@ -51,6 +69,10 @@ export class CePoplinkAd extends LitElement {
 
   @property({ type: Boolean }) showonleft = true;
 
+  @property({ type: Boolean }) highlightkeywordindicator = false;
+
+  @property({ type: Boolean }) highlightclosebutton = false;
+
   @property({ type: Number }) keywordcontainerwidth = 0;
 
   @property({ type: Number }) keywordcontainerX = 0;
@@ -64,6 +86,10 @@ export class CePoplinkAd extends LitElement {
 
   _handleMouseOver() {
     this.visible = true;
+  }
+
+  _handleClose() {
+    this.visible = false;
   }
 
   _handleWindowResize() {
@@ -106,11 +132,25 @@ export class CePoplinkAd extends LitElement {
     }, 1000);
   }
 
+  _handleKeywordIndicatorMouseEnter() {
+    this.highlightkeywordindicator = true;
+  }
+
+  _handleKeywordIndicatorMouseLeave() {
+    this.highlightkeywordindicator = false;
+  }
+
+  _handleCloseMouseEnter() {
+    this.highlightclosebutton = true;
+  }
+
+  _handleCloseMouseLeave() {
+    this.highlightclosebutton = false;
+  }
+
   render() {
     return html`
-      <span
-        id="${this.ad.id}"
-      >
+      <span id="${this.ad.id}">
         <span
           class="keyword"
           @mouseover=${this._handleMouseOver}
@@ -119,22 +159,50 @@ export class CePoplinkAd extends LitElement {
           ${this.ad.keyword}
         </span>
         <span
-          class="bannercontainer ${
-            this.showonleft ? 'leftAlign' : 'rightAlign'
-          }"
+          class="keywordindicator ${this.highlightkeywordindicator
+            ? 'highlightkeywordindicator'
+            : ''}"
+          @mouseenter=${this._handleKeywordIndicatorMouseEnter}
+          @mouseleave=${this._handleKeywordIndicatorMouseLeave}
         >
-            <a
-              href=${`https://ads.poplink.in/r?t=${this.timeonscreen}&aid=${this.ad.id}&at="${this.token}"`}
-            >
-              <img
-                class="${this.visible ? 'visible' : 'invisible'}"
-                src=${this.ad.banner}
-                alt=${this.ad.bannerAlt}
-              />
-            </a>
-             </span>
-          </span> </span
-      ></span>
+          <a href=${`https://poplink.in`} target="_blank">
+            <img
+              class="${this.visible ? 'visible' : 'invisible'}"
+              src="https://poplink.in/static/media/logo.8d4c23d4.jpg"
+              alt="Poplink Ads logo"
+              width="20"
+              height="20"
+            />
+          </a>
+        </span>
+        <span
+          class="bannercontainer ${this.showonleft
+            ? 'leftAlign'
+            : 'rightAlign'}"
+        >
+          <a
+            href=${`https://ads.poplink.in/r?t=${this.timeonscreen}&aid=${this.ad.id}&at="${this.token}"`}
+            target="_blank"
+          >
+            <img
+              class="${this.visible ? 'visible' : 'invisible'}"
+              src=${this.ad.banner}
+              alt=${this.ad.bannerAlt}
+            />
+          </a>
+          <button
+            class="closebutton ${this.visible ? 'visible' : 'invisible'} ${this
+              .highlightclosebutton
+              ? 'highlightclosebutton'
+              : ''}"
+            @mouseenter=${this._handleCloseMouseEnter}
+            @mouseleave=${this._handleCloseMouseLeave}
+            @click=${this._handleClose}
+          >
+            Close Ad
+          </button>
+        </span>
+      </span>
     `;
   }
 }
