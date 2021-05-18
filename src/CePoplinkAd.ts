@@ -1,4 +1,4 @@
-import { html, css, LitElement, property } from 'lit-element';
+import { html, css, LitElement, property, query } from 'lit-element';
 
 interface Ad {
   id: string;
@@ -49,7 +49,14 @@ export class CePoplinkAd extends LitElement {
 
   @property({ type: Boolean }) visible = false;
 
-  @property({ type: Boolean }) showonleft = false;
+  @property({ type: Boolean }) showonleft = true;
+
+  @property({ type: Number }) keywordcontainerwidth = 0;
+
+  @property({ type: Number }) keywordcontainerX = 0;
+
+  @query('#poplink-ad-keyword')
+  _keyword: any;
 
   _handleFocus() {
     this.visible = true;
@@ -59,12 +66,38 @@ export class CePoplinkAd extends LitElement {
     this.visible = true;
   }
 
-  constructor(ad: Ad, token: string, visible: boolean, showonleft: boolean) {
+  _handleWindowResize() {
+    const windowXCenter = window.innerWidth / 2;
+    if (this.keywordcontainerX + this.keywordcontainerwidth < 250) {
+      this.showonleft = true;
+    } else if (
+      this.keywordcontainerX + this.keywordcontainerwidth >
+      windowXCenter
+    )
+      this.showonleft = true;
+    else this.showonleft = false;
+  }
+
+  async firstUpdated() {
+    await new Promise(r => setTimeout(r, 0));
+    const x = this.shadowRoot
+      ?.querySelector(`#${this.ad.id}`)
+      ?.getBoundingClientRect().x;
+    const width = this.shadowRoot
+      ?.querySelector(`#${this.ad.id}`)
+      ?.getBoundingClientRect().width;
+
+    this.keywordcontainerwidth = width || 0;
+    this.keywordcontainerX = x || 0;
+
+    window.addEventListener('resize', this._handleWindowResize.bind(this));
+  }
+
+  constructor(ad: Ad, token: string, visible: boolean) {
     super();
 
     this.ad = ad;
     this.visible = visible;
-    this.showonleft = showonleft;
     this.timeonscreen = 0;
     this.token = token;
 
@@ -75,7 +108,9 @@ export class CePoplinkAd extends LitElement {
 
   render() {
     return html`
-      <span>
+      <span
+        id="${this.ad.id}"
+      >
         <span
           class="keyword"
           @mouseover=${this._handleMouseOver}

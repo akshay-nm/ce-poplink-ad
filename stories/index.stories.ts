@@ -43,7 +43,7 @@ const Template: Story<ArgTypes> = ({
   visible = false,
   showonleft = false,
 }: ArgTypes) => html`
-  Some text
+  Some textSome textSome textSome textSome textSome textSome textSome text
   <ce-poplink-ad
     .ad=${ad}
     .token=${token}
