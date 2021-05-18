@@ -15,18 +15,28 @@ export class CePoplinkAd extends LitElement {
       position: relative;
       color: var(--ce-poplink-ad-text-color, #000);
     }
-    keyword {
+    .keyword {
       position: relative;
-      display: inline-block;
+      display: inline;
+      border: 1px dotted gray;
+      padding-right: 1px;
+      padding-left: 1px;
     }
-    bannercontainer {
+    .bannercontainer {
       position: absolute;
       z-index: 10;
+      top: 20px;
     }
-    visible {
-      display: block;
+    .rightAlign {
+      right: 0;
     }
-    invisible {
+    .leftAlign {
+      left: 0;
+    }
+    .visible {
+      display: inline;
+    }
+    .invisible {
       display: none;
     }
   `;
@@ -35,38 +45,61 @@ export class CePoplinkAd extends LitElement {
 
   @property({ type: String }) token;
 
-  @property({ type: Number }) timeOnScreen = 0;
+  @property({ type: Number }) timeonscreen;
 
-  @property({ type: Boolean }) visible;
+  @property({ type: Boolean }) visible = false;
 
-  constructor(ad: Ad, token: string, visible: boolean) {
+  @property({ type: Boolean }) showonleft = false;
+
+  _handleFocus() {
+    this.visible = true;
+  }
+
+  _handleMouseOver() {
+    this.visible = true;
+  }
+
+  constructor(ad: Ad, token: string, visible: boolean, showonleft: boolean) {
     super();
 
     this.ad = ad;
     this.visible = visible;
-    this.timeOnScreen = 0;
+    this.showonleft = showonleft;
+    this.timeonscreen = 0;
     this.token = token;
+
     setInterval(() => {
-      this.timeOnScreen += 1;
+      this.timeonscreen += 1;
     }, 1000);
   }
 
   render() {
     return html`
       <span>
-        <span class="keyword"> ${this.ad.keyword} </span>
-        <span class="bannercontainer">
-          <a
-            href=${`https://ads.poplink.in/r?t=${this.timeOnScreen}&aid=${this.ad.id}&at="${this.token}"`}
-          >
-            <img
-              class="banner ${this.visible ? 'visible' : 'invisible'}"
-              src=${this.ad.banner}
-              alt=${this.ad.bannerAlt}
-            />
-          </a>
+        <span
+          class="keyword"
+          @mouseover=${this._handleMouseOver}
+          @focus=${this._handleFocus}
+        >
+          ${this.ad.keyword}
         </span>
-      </span>
+        <span
+          class="bannercontainer ${
+            this.showonleft ? 'leftAlign' : 'rightAlign'
+          }"
+        >
+            <a
+              href=${`https://ads.poplink.in/r?t=${this.timeonscreen}&aid=${this.ad.id}&at="${this.token}"`}
+            >
+              <img
+                class="${this.visible ? 'visible' : 'invisible'}"
+                src=${this.ad.banner}
+                alt=${this.ad.bannerAlt}
+              />
+            </a>
+             </span>
+          </span> </span
+      ></span>
     `;
   }
 }

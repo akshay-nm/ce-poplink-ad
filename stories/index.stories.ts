@@ -8,6 +8,7 @@ export default {
     ad: { control: 'object' },
     token: { control: 'text' },
     visible: { control: 'boolean' },
+    showonleft: { control: 'boolean' },
   },
 };
 
@@ -28,19 +29,30 @@ interface ArgTypes {
   ad?: Ad;
   token?: string;
   visible?: boolean;
+  showonleft?: boolean;
 }
 
 const Template: Story<ArgTypes> = ({
   ad = {
     id: 'AJSDGHKA',
-    banner: 'https://placeholder.com/150',
+    banner: 'https://via.placeholder.com/250x150',
     bannerAlt: 'Poplink Ad',
     keyword: 'some keyword',
   },
   token = 'SOME_TOKEN',
   visible = false,
+  showonleft = false,
 }: ArgTypes) => html`
-  <ce-poplink-ad .ad=${ad} .token=${token} .visible=${visible}> </ce-poplink-ad>
+  Some text
+  <ce-poplink-ad
+    .ad=${ad}
+    .token=${token}
+    .visible=${visible}
+    .showonleft=${showonleft}
+  >
+  </ce-poplink-ad>
+  Some More TextSome More TextSome More TextSome More TextSome More TextSome
+  More TextSome More TextSome More TextSome More TextSome More Text
 `;
 
 export const Regular = Template.bind({});
