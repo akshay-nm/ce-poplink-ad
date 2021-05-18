@@ -1,11 +1,15 @@
 {
-  "name": "ce-poplink-ad",
+  "name": "@akshay-nm/ce-poplink-ad",
   "version": "0.1.0",
   "description": "Webcomponent ce-poplink-ad following open-wc recommendations",
   "author": "ce-poplink-ad",
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/akshay-nm/ce-poplink-ad.git"
+  },
   "scripts": {
     "start": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
     "build": "tsc",
